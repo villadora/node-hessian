@@ -30,5 +30,29 @@ describe('test.js', function() {
                 done(err);
             });
         });
+
+        it('argTrue', function(done) {
+            proxy.call('argTrue', [true], function(err, res) {
+                console.log(res);
+                done(err);
+            });
+        });
+
+        it('argFalse', function(done) {
+            proxy.call('argFalse', [false], function(err, res) {
+                console.log(res);
+                done(err);
+            });
+        });
+
+
+        it.skip('argInt_0', function(done) {
+            proxy.call('argInt_0', [0], function(err, res) {
+                console.log(res);
+                done(err);
+            });
+        });
+
+
     });
 });
