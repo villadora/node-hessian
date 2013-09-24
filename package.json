@@ -7,9 +7,9 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": "",
-    "keywords": [
-    ],
+    "keywords": [],
     "dependencies": {
+        "buffer-builder": "~0.1.0"
     },
     "devDependencies": {
         "grunt": "~0.4.1",
@@ -22,7 +22,7 @@
         "grunt-contrib-watch": "0.3.x"
     },
     "readmeFilename": "README.md",
-    "author":  {
+    "author": {
         "name": "wei.gao",
         "email": "jky239@gmail.com"
     },

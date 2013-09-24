@@ -2,7 +2,7 @@
     "passfail"      : false, 
     "maxerr"        : 20,    
     "browser"       : true,   
-    "node"          : false,
+    "node"          : true,
     "debug"         : false,  
     "devel"         : true,   
     "es5"           : false,   
