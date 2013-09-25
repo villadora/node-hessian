@@ -1,5 +1,5 @@
 {
-    "name": "node-hessian",
+    "name": "hessian-proxy",
     "version": "0.0.0",
     "description": "",
     "main": "./lib/index.js",
@@ -9,7 +9,9 @@
     "repository": "",
     "keywords": [],
     "dependencies": {
-        "buffer-builder": "~0.1.0"
+        "buffer-builder": "~0.1.0",
+        "buffer-reader": "~0.0.1",
+        "long": "~1.1.2"
     },
     "devDependencies": {
         "grunt": "~0.4.1",

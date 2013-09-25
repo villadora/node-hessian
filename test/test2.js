@@ -4,10 +4,11 @@ var assert = require('chai').assert,
     Proxy = hessian.Proxy;
 
 
-describe('hessian 1.0 test', function() {
+describe('hessian 2.0 test', function() {
     var proxy;
     before(function() {
-        proxy = new Proxy('http://hessian.caucho.com/test/test');
+        proxy = new Proxy('http://hessian.caucho.com/test/test2');
+        proxy.version = 2;
     });
 
 
