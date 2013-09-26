@@ -10,7 +10,7 @@
     "keywords": [],
     "dependencies": {
         "buffer-builder": "~0.1.0",
-        "buffer-reader": "~0.0.1",
+        "buffer-reader": "~0.0.2",
         "long": "~1.1.2"
     },
     "devDependencies": {

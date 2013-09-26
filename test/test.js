@@ -8,8 +8,8 @@ describe('hessian 1.0 test', function() {
     var proxy;
     before(function() {
         proxy = new Proxy('http://hessian.caucho.com/test/test');
+        proxy.version = 1;
     });
-
 
     function MAKE_ARGTEST(method, args) {
         it(method, function(done) {

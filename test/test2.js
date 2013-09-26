@@ -8,18 +8,8 @@ describe('hessian 2.0 test', function() {
     var proxy;
     before(function() {
         proxy = new Proxy('http://hessian.caucho.com/test/test2');
-        proxy.version = 2;
     });
 
-
-    function MAKE_ARGTEST(method, args) {
-        it(method, function(done) {
-            proxy.call(method, args, function(err, res) {
-                assert.isTrue(res);
-                done(err);
-            });
-        });
-    }
 
     it('methodNull', function(done) {
         proxy.call('methodNull', [], function(err, res) {
@@ -28,18 +18,38 @@ describe('hessian 2.0 test', function() {
         });
     });
 
-    it('replyNull', function(done) {
-        proxy.call('replyNull', null, function(err, res) {
-            assert.isNull(res);
-            done(err);
+    function MAKE_ARGTEST(method, args, as) {
+        it(method, function(done) {
+            proxy.call(method, args, function(err, res) {
+                if (as) as(res);
+                else assert.isTrue(res);
+                done(err);
+            });
         });
+    }
+
+    function MAKE_REPLYTEST(method, reply, as) {
+        it(method, function(done) {
+            proxy.call(method, [], function(err, res) {
+                if (as) as(res);
+                else assert.strictEqual(res, reply);
+                done(err);
+            });
+        });
+    }
+
+
+    describe('test Null|True|False', function() {
+
+        MAKE_REPLYTEST('replyNull', null);
+        MAKE_REPLYTEST('replyTrue', true);
+        MAKE_REPLYTEST('replyFalse', false);
+
+
+        MAKE_ARGTEST('argNull', [null]);
+        MAKE_ARGTEST('argTrue', [true]);
+        MAKE_ARGTEST('argFalse', [false]);
     });
-
-
-
-    MAKE_ARGTEST('argNull', [null]);
-    MAKE_ARGTEST('argTrue', [true]);
-    MAKE_ARGTEST('argFalse', [false]);
 
     describe.skip('test Date', function() {
         var dates = [new Date(0), new Date(1998, 4, 8, 7, 51), new Date(1998, 4, 8, 7, 51)];
@@ -56,52 +66,66 @@ describe('hessian 2.0 test', function() {
     });
 
 
-    describe('test argInt', function() {
+    describe('test Int', function() {
 
-        function MAKE_ARGINT_TEST(val) {
-            var arg = parseInt(val),
+        function MAKE_INT_TEST(val) {
+            var arg = parseInt(val, /^-?0x/.test(val) ? 16 : 10),
                 name = val;
             if (arg < 0)
                 name = name.replace(/^./g, 'm');
             assert.isNumber(arg);
             MAKE_ARGTEST('argInt_' + name, [arg]);
+            MAKE_REPLYTEST('replyInt_' + name, arg);
         }
 
-        MAKE_ARGINT_TEST('0');
-        MAKE_ARGINT_TEST('1');
-        MAKE_ARGINT_TEST('47');
-        MAKE_ARGINT_TEST('-16');
-        MAKE_ARGINT_TEST('0x30');
-        MAKE_ARGINT_TEST('0x7ff');
-        MAKE_ARGINT_TEST('-17');
-        MAKE_ARGINT_TEST('-0x800');
-        MAKE_ARGINT_TEST('0x800');
-        MAKE_ARGINT_TEST('0x3ffff');
-        MAKE_ARGINT_TEST('-0x801');
-        MAKE_ARGINT_TEST('-0x40000');
-        MAKE_ARGINT_TEST('0x40000');
-        MAKE_ARGINT_TEST('0x7fffffff');
-        MAKE_ARGINT_TEST('-0x40001');
-        MAKE_ARGINT_TEST('-0x80000000');
+
+        MAKE_INT_TEST('0');
+        MAKE_INT_TEST('1');
+        MAKE_INT_TEST('47');
+        MAKE_INT_TEST('-16');
+        MAKE_INT_TEST('0x30');
+        MAKE_INT_TEST('0x7ff');
+        MAKE_INT_TEST('-17');
+        MAKE_INT_TEST('-0x800');
+        MAKE_INT_TEST('0x800');
+        MAKE_INT_TEST('0x3ffff');
+        MAKE_INT_TEST('-0x801');
+        MAKE_INT_TEST('-0x40000');
+        MAKE_INT_TEST('0x40000');
+        MAKE_INT_TEST('0x7fffffff');
+        MAKE_INT_TEST('-0x40001');
+        MAKE_INT_TEST('-0x80000000');
     });
 
 
-    describe('test argLong', function() {
+    describe('test Long', function() {
 
         function MAKE_ARGLONG_TEST(name, low, high) {
 
             high = high || 0;
             var arg;
-            if (low < 0 && high === 0) {
-                var arg = Long.fromNumber(low);
+            if ((low > 0x7fffffff || low < 0) && high === 0) {
+                arg = Long.fromNumber(low);
             } else {
-                var arg = {
-                    high: high,
-                    low: low
+                arg = {
+                    high: high & 0xffffffff,
+                    low: low & 0xffffffff
                 };
             }
+            var val;
+            if (arg.hasOwnProperty('high'))
+                val = new Long(arg.low, arg.high).toNumber();
+            else
+                val = arg.toNumber();
+
 
             MAKE_ARGTEST('argLong_' + name, [arg]);
+            MAKE_REPLYTEST('replyLong_' + name, arg, function(res) {
+                if (res.hasOwnProperty('high'))
+                    res = new Long(res.low, res.high).toNumber();
+
+                assert.equal(val, res);
+            });
         }
 
 
@@ -141,10 +165,19 @@ describe('hessian 2.0 test', function() {
             // MAKE_ARGTEST('argDouble_' + name, [arg]);
             var method = 'argDouble_' + name;
             it(method, function(done) {
-                proxy.call(method, [arg], function(err, res) {
-                    // assert.isTrue(res);
-                    if (res !== true)
-                        console.log(res.toString());
+                proxy.call(method, [{
+                    val: arg,
+                    type: 'double'
+                }], function(err, res) {
+                    assert.isTrue(res);
+                    done(err);
+                });
+            });
+
+            it('replyDouble_' + name, function(done) {
+                proxy.call('replyDouble_' + name, [], function(err, res) {
+                    console.log(res);
+                    assert(res == arg);
                     done(err);
                 });
             });
@@ -160,10 +193,8 @@ describe('hessian 2.0 test', function() {
         MAKE_ARGDBOULE_TEST('-129.0');
         MAKE_ARGDBOULE_TEST('32767.0');
         MAKE_ARGDBOULE_TEST('-32768.0');
-        MAKE_ARGDBOULE_TEST('0.001');
-        MAKE_ARGDBOULE_TEST('-0.001');
-        MAKE_ARGDBOULE_TEST('65.536');
         MAKE_ARGDBOULE_TEST('3.14159');
     });
+
 
 });
