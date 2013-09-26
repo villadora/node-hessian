@@ -5,6 +5,7 @@ var assert = require('chai').assert,
 
 
 describe('hessian 2.0 test', function() {
+    this.timeout(5000);
     var proxy;
     before(function() {
         proxy = new Proxy('http://hessian.caucho.com/test/test2');
@@ -12,7 +13,7 @@ describe('hessian 2.0 test', function() {
 
 
     it('methodNull', function(done) {
-        proxy.call('methodNull', [], function(err, res) {
+        proxy.invoke('methodNull', [], function(err, res) {
             assert.isNull(res);
             done(err);
         });
@@ -20,7 +21,7 @@ describe('hessian 2.0 test', function() {
 
     function MAKE_ARGTEST(method, args, as) {
         it(method, function(done) {
-            proxy.call(method, args, function(err, res) {
+            proxy.invoke(method, args, function(err, res) {
                 if (as) as(res);
                 else assert.isTrue(res);
                 done(err);
@@ -30,7 +31,7 @@ describe('hessian 2.0 test', function() {
 
     function MAKE_REPLYTEST(method, reply, as) {
         it(method, function(done) {
-            proxy.call(method, [], function(err, res) {
+            proxy.invoke(method, [], function(err, res) {
                 if (as) as(res);
                 else assert.strictEqual(res, reply);
                 done(err);
@@ -39,7 +40,7 @@ describe('hessian 2.0 test', function() {
     }
 
 
-    describe('test Null|True|False', function() {
+    describe.only('test Null|True|False', function() {
 
         MAKE_REPLYTEST('replyNull', null);
         MAKE_REPLYTEST('replyTrue', true);
@@ -57,7 +58,7 @@ describe('hessian 2.0 test', function() {
             arg = dates[1];
 
         it(method, function(done) {
-            proxy.call(method, [arg], function(err, res) {
+            proxy.invoke(method, [arg], function(err, res) {
                 console.log(res);
                 done(err);
             });
@@ -165,7 +166,7 @@ describe('hessian 2.0 test', function() {
             // MAKE_ARGTEST('argDouble_' + name, [arg]);
             var method = 'argDouble_' + name;
             it(method, function(done) {
-                proxy.call(method, [{
+                proxy.invoke(method, [{
                     val: arg,
                     type: 'double'
                 }], function(err, res) {
@@ -175,7 +176,7 @@ describe('hessian 2.0 test', function() {
             });
 
             it('replyDouble_' + name, function(done) {
-                proxy.call('replyDouble_' + name, [], function(err, res) {
+                proxy.invoke('replyDouble_' + name, [], function(err, res) {
                     console.log(res);
                     assert(res == arg);
                     done(err);

@@ -13,7 +13,7 @@ describe('hessian 1.0 test', function() {
 
     function MAKE_ARGTEST(method, args) {
         it(method, function(done) {
-            proxy.call(method, args, function(err, res) {
+            proxy.invoke(method, args, function(err, res) {
                 assert.isTrue(res);
                 done(err);
             });
@@ -21,14 +21,14 @@ describe('hessian 1.0 test', function() {
     }
 
     it('methodNull', function(done) {
-        proxy.call('methodNull', [], function(err, res) {
+        proxy.invoke('methodNull', [], function(err, res) {
             assert.isNull(res);
             done(err);
         });
     });
 
     it('replyNull', function(done) {
-        proxy.call('replyNull', null, function(err, res) {
+        proxy.invoke('replyNull', null, function(err, res) {
             assert.isNull(res);
             done(err);
         });
@@ -46,7 +46,7 @@ describe('hessian 1.0 test', function() {
             arg = dates[1];
 
         it(method, function(done) {
-            proxy.call(method, [arg], function(err, res) {
+            proxy.invoke(method, [arg], function(err, res) {
                 console.log(res);
                 done(err);
             });
@@ -140,7 +140,7 @@ describe('hessian 1.0 test', function() {
             // MAKE_ARGTEST('argDouble_' + name, [arg]);
             var method = 'argDouble_' + name;
             it(method, function(done) {
-                proxy.call(method, [arg], function(err, res) {
+                proxy.invoke(method, [arg], function(err, res) {
                     // assert.isTrue(res);
                     if (res !== true)
                         console.log(res.toString());

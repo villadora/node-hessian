@@ -9,7 +9,7 @@
     "repository": {
         "type": "git",
         "url": "git@github.com:villadora/node-hessian.git"
-    },,
+    },
     "keywords": [],
     "dependencies": {
         "buffer-builder": "~0.1.0",
