@@ -32,7 +32,7 @@ describe('hessian 2.0 test', function() {
     function MAKE_REPLYTEST(method, reply, as) {
         it(method, function(done) {
             proxy.invoke(method, [], function(err, res) {
-                if (as) as(res);
+                if (as) as(res, reply);
                 else assert.strictEqual(res, reply);
                 done(err);
             });
@@ -40,7 +40,7 @@ describe('hessian 2.0 test', function() {
     }
 
 
-    describe.only('test Null|True|False', function() {
+    describe('test Null|True|False', function() {
 
         MAKE_REPLYTEST('replyNull', null);
         MAKE_REPLYTEST('replyTrue', true);
@@ -52,18 +52,64 @@ describe('hessian 2.0 test', function() {
         MAKE_ARGTEST('argFalse', [false]);
     });
 
-    describe.skip('test Date', function() {
-        var dates = [new Date(0), new Date(1998, 4, 8, 7, 51), new Date(1998, 4, 8, 7, 51)];
-        var method = 'argDate_1',
-            arg = dates[1];
+    describe('test Date', function() {
+        var dates = [new Date(0), new Date(Date.UTC(98, 4, 8, 9, 51, 31)), new Date(Date.UTC(98, 4, 8, 9, 51))];
 
-        it(method, function(done) {
-            proxy.invoke(method, [arg], function(err, res) {
-                console.log(res);
-                done(err);
+        for (var i = 0; i < dates.length; ++i) {
+            MAKE_ARGTEST('argDate_' + i, [dates[i]]);
+            MAKE_REPLYTEST('replyDate_' + i, dates[i], function(res, reply) {
+                assert.equal(res.getTime(), reply.getTime());
+            });
+        }
+    });
+
+    describe.only('test Binary', function() {
+        var buf1023, ss = [];
+        for (var i = 0; i < 16; i++) {
+            ss.push("" + parseInt(i / 10, 10) + (i % 10) + " 456789012345678901234567890123456789012345678901234567890123\n");
+        }
+
+        buf1023 = new Buffer(ss.join('').substring(0, 1023));
+
+        [new Buffer(0), new Buffer('012345678901234'),
+            new Buffer('0123456789012345'),
+            buf1023
+        ].forEach(function(arg) {
+            var len = arg.length;
+            MAKE_ARGTEST('argBinary_' + len, [arg]);
+            MAKE_REPLYTEST('replyBinary_' + len, arg, function(res) {
+                assert.equal(res.length, len);
             });
         });
+    });
 
+    describe('test String', function() {
+        [0, 1, 31, 32, 1023, 1024, 65536].forEach(function(length) {
+            var str;
+
+            if (length <= 32) {
+                str = new Array(Math.ceil(length / 10)).join('0123456789');
+                var rest = length % 10;
+                for (var i = 0; i < rest; ++i) {
+                    str += i + '';
+                }
+            } else if (length <= 1024) {
+                var ss = [];
+                for (var i = 0; i < 16; i++)
+                    ss.push("" + parseInt(i / 10, 10) + (i % 10) + " 456789012345678901234567890123456789012345678901234567890123\n");
+
+                str = ss.join('').substring(0, length);
+            } else {
+                var ss = [];
+                for (var i = 0; i < 64 * 16; i++)
+                    ss.push("" + parseInt(i / 100, 10) + (parseInt(i / 10, 10) % 10) + (i % 10) + " 56789012345678901234567890123456789012345678901234567890123\n");
+
+                str = ss.join('').substring(0, length);
+            }
+
+            MAKE_ARGTEST('argString_' + length, [str]);
+            MAKE_REPLYTEST('replyString_' + length, str);
+        });
     });
 
 
@@ -177,7 +223,6 @@ describe('hessian 2.0 test', function() {
 
             it('replyDouble_' + name, function(done) {
                 proxy.invoke('replyDouble_' + name, [], function(err, res) {
-                    console.log(res);
                     assert(res == arg);
                     done(err);
                 });

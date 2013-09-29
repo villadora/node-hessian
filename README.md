@@ -21,6 +21,8 @@ proxy.invoke(methodName, [arg1, arg2, arg3..]);
 
 ## Reference
 
+Notice: There are _some_ mistakes in the document and make a lot of confuse when writing protocol according to spec, especially  when doing test and just find test docs are not correct for some arguments values.
+
 [Hessian 1.0 Spec](http://hessian.caucho.com/doc/hessian-1.0-spec.xtp)
 
 [Hessian 2.0 Serialization](http://hessian.caucho.com/doc/hessian-serialization.html)
