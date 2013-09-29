@@ -52,6 +52,39 @@ describe('hessian 2.0 test', function() {
         MAKE_ARGTEST('argFalse', [false]);
     });
 
+
+    describe.only('test Object', function() {
+        // MAKE_ARGTEST('argObject_0', [{
+        //     __type__: 'com.caucho.hessian.test.A0'
+        // }]);
+
+        // MAKE_REPLYTEST('replyObject_0', null, function(res) {
+        //     assert.equal(res.__type__, 'com.caucho.hessian.test.A0');
+        // });
+
+        var testObject = 'com.caucho.hessian.test.TestObject';
+        // MAKE_ARGTEST('argObject_1', [{
+        //     __type__: testObject,
+        //     _value: 0
+        // }]);
+
+        // MAKE_REPLYTEST('replyObject_1', null, function(res) {
+        //     assert.equal(res.__type__, testObject);
+        //     assert.equal(res._value, 0);
+        // });
+
+
+        // MAKE_ARGTEST('argObject_2', [{
+        //     __type__: testObject,
+        //     _value: 0
+        // }, {
+        //     __type__: testObject,
+        //     _value: 1
+        // }]);
+
+
+    });
+
     describe('test Date', function() {
         var dates = [new Date(0), new Date(Date.UTC(98, 4, 8, 9, 51, 31)), new Date(Date.UTC(98, 4, 8, 9, 51))];
 
@@ -63,7 +96,7 @@ describe('hessian 2.0 test', function() {
         }
     });
 
-    describe.only('test Binary', function() {
+    describe('test Binary', function() {
         var buf1023, ss = [];
         for (var i = 0; i < 16; i++) {
             ss.push("" + parseInt(i / 10, 10) + (i % 10) + " 456789012345678901234567890123456789012345678901234567890123\n");
