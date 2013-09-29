@@ -53,7 +53,14 @@ describe('hessian 2.0 test', function() {
     });
 
 
-    describe.only('test Object', function() {
+    describe.only('test List', function() {
+        var list = [];
+        list.__type__ = '[string';
+        MAKE_ARGTEST('argTypedFixedList_0', [list]);
+    });
+
+
+    describe('test Object', function() {
         // MAKE_ARGTEST('argObject_0', [{
         //     __type__: 'com.caucho.hessian.test.A0'
         // }]);
