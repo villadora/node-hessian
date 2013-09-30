@@ -55,8 +55,18 @@ describe('hessian 2.0 test', function() {
 
     describe.only('test List', function() {
         var list = [];
-        list.__type__ = '[string';
-        MAKE_ARGTEST('argTypedFixedList_0', [list]);
+        [0, 1, 7, 8].forEach(function(len) {
+            var list = [];
+            for (var i = 0; i < len; ++i)
+                list.push((i + 1) + '');
+
+            MAKE_ARGTEST('argUntypedFixedList_' + len, [list]);
+
+            var typedList = list.concat();
+            typedList.__type__ = '[string';
+            MAKE_ARGTEST('argTypedFixedList_' + len, [typedList]);
+        });
+
     });
 
 
