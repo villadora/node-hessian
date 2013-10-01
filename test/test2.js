@@ -10,6 +10,12 @@ describe('hessian 2.0 test', function() {
     var proxy;
     before(function() {
         proxy = new Proxy('http://hessian.caucho.com/test/test2');
+        proxy.on('call', function(data) {
+            // console.log('call: ', data);
+        });
+        proxy.on('reply', function(data) {
+            // console.log('reply:', data);
+        });
     });
 
 
@@ -54,7 +60,7 @@ describe('hessian 2.0 test', function() {
     });
 
 
-    describe.only('test Map', function() {
+    describe('test Map', function() {
 
         [0, 1, 2, 3].forEach(function(i) {
             MAKE_REPLYTEST('replyTypedMap_' + i, null, function(res) {
@@ -62,9 +68,11 @@ describe('hessian 2.0 test', function() {
             });
 
             MAKE_REPLYTEST('replyUntypedMap_' + i, null, function(res) {
-                res.forEach(function(val, key) {
-                    console.log(key, val);
-                });
+                if (i < 3) {
+                    assert.lengthOf(res.keys(), i);
+                } else {
+                    assert.lengthOf(res.keys(), 1);
+                }
             });
         });
 
@@ -88,7 +96,7 @@ describe('hessian 2.0 test', function() {
         MAKE_ARGTEST('argTypedMap_0', [tmap]);
 
         tmap = getHashtable();
-        tmap['a'] = 0;
+        tmap.a = 0;
         MAKE_ARGTEST('argTypedMap_1', [tmap]);
 
         tmap = getHashtable(new Map());
@@ -126,34 +134,62 @@ describe('hessian 2.0 test', function() {
 
 
     describe('test Object', function() {
-        // MAKE_ARGTEST('argObject_0', [{
-        //     __type__: 'com.caucho.hessian.test.A0'
-        // }]);
+        MAKE_ARGTEST('argObject_0', [{
+            __type__: 'com.caucho.hessian.test.A0'
+        }]);
 
-        // MAKE_REPLYTEST('replyObject_0', null, function(res) {
-        //     assert.equal(res.__type__, 'com.caucho.hessian.test.A0');
-        // });
+        MAKE_REPLYTEST('replyObject_0', null, function(res) {
+            assert.equal(res.__type__, 'com.caucho.hessian.test.A0');
+        });
 
         var testObject = 'com.caucho.hessian.test.TestObject';
-        // MAKE_ARGTEST('argObject_1', [{
-        //     __type__: testObject,
-        //     _value: 0
-        // }]);
+        MAKE_ARGTEST('argObject_1', [{
+            __type__: testObject,
+            _value: 0
+        }]);
 
-        // MAKE_REPLYTEST('replyObject_1', null, function(res) {
-        //     assert.equal(res.__type__, testObject);
-        //     assert.equal(res._value, 0);
-        // });
+        MAKE_REPLYTEST('replyObject_1', null, function(res) {
+            assert.equal(res.__type__, testObject);
+            assert.equal(res._value, 0);
+        });
 
 
-        // MAKE_ARGTEST('argObject_2', [{
-        //     __type__: testObject,
-        //     _value: 0
-        // }, {
-        //     __type__: testObject,
-        //     _value: 1
-        // }]);
+        MAKE_ARGTEST('argObject_2', [
+            [{
+                __type__: testObject,
+                _value: 0
+            }, {
+                __type__: testObject,
+                _value: 1
+            }]
+        ]);
 
+        var obj = {
+            __type__: testObject,
+            _value: 0
+        };
+
+        MAKE_ARGTEST('argObject_2a', [
+            [obj, obj]
+        ]);
+
+        MAKE_ARGTEST('argObject_2b', [
+            [obj, {
+                __type__: testObject,
+                _value: 0
+            }]
+        ]);
+
+
+        var cons = {
+            __type__: 'com.caucho.hessian.test.TestCons',
+            _first: 'a',
+            _rest: null
+        };
+
+        cons._rest = cons;
+
+        MAKE_ARGTEST('argObject_3', [cons]);
 
     });
 
