@@ -1,6 +1,6 @@
 {
     "name": "hessian-proxy",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "hessian proxy to make rpc calls for javascript",
     "main": "./lib/index.js",
     "scripts": {
@@ -10,7 +10,12 @@
         "type": "git",
         "url": "git@github.com:villadora/node-hessian.git"
     },
-    "keywords": [],
+    "keywords": [
+        "hessian",
+        "rpc",
+        "binary protocol",
+        "hessian 2.0"
+    ],
     "dependencies": {
         "buffer-builder": "~0.1.0",
         "buffer-reader": "~0.0.2",
