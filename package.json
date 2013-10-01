@@ -4,7 +4,7 @@
     "description": "hessian proxy to make rpc calls for javascript",
     "main": "./lib/index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "make test"
     },
     "repository": {
         "type": "git",
@@ -17,6 +17,7 @@
         "long": "~1.1.2"
     },
     "devDependencies": {
+        "es6-map-shim": "*",
         "grunt": "~0.4.1",
         "jshint": "~2.1.9",
         "mocha": "~1.12.0",

@@ -58,7 +58,7 @@ describe('hessian 1.0 test', function() {
     describe('test argInt', function() {
 
         function MAKE_ARGINT_TEST(val) {
-            var arg = parseInt(val),
+            var arg = parseInt(val, 10),
                 name = val;
             if (arg < 0)
                 name = name.replace(/^./g, 'm');

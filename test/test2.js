@@ -3,6 +3,7 @@ var assert = require('chai').assert,
     Long = require('long'),
     Proxy = hessian.Proxy;
 
+require('es6-map-shim');
 
 describe('hessian 2.0 test', function() {
     this.timeout(5000);
@@ -53,7 +54,61 @@ describe('hessian 2.0 test', function() {
     });
 
 
-    describe.only('test List', function() {
+    describe.only('test Map', function() {
+
+        [0, 1, 2, 3].forEach(function(i) {
+            MAKE_REPLYTEST('replyTypedMap_' + i, null, function(res) {
+                assert.equal(res.__mapType__, 'java.util.Hashtable');
+            });
+
+            MAKE_REPLYTEST('replyUntypedMap_' + i, null, function(res) {
+                res.forEach(function(val, key) {
+                    console.log(key, val);
+                });
+            });
+        });
+
+        MAKE_ARGTEST('argUntypedMap_0', [{}]);
+        MAKE_ARGTEST('argUntypedMap_1', [{
+            'a': 0
+        }]);
+
+        var map = new Map();
+        map.set(0, 'a');
+        map.set(1, 'b');
+        MAKE_ARGTEST('argUntypedMap_2', [map]);
+
+        map = new Map();
+        map.set(['a'], 0);
+        MAKE_ARGTEST('argUntypedMap_3', [map]);
+
+
+
+        var tmap = getHashtable();
+        MAKE_ARGTEST('argTypedMap_0', [tmap]);
+
+        tmap = getHashtable();
+        tmap['a'] = 0;
+        MAKE_ARGTEST('argTypedMap_1', [tmap]);
+
+        tmap = getHashtable(new Map());
+        tmap.set(0, 'a');
+        tmap.set(1, 'b');
+        MAKE_ARGTEST('argTypedMap_2', [tmap]);
+
+        tmap = getHashtable(new Map());
+        tmap.set(['a'], 0);
+        MAKE_ARGTEST('argTypedMap_3', [tmap]);
+
+        function getHashtable(map) {
+            var map = map || {};
+            map.__mapType__ = 'java.util.Hashtable';
+            return map;
+        }
+
+    });
+
+    describe('test List', function() {
         var list = [];
         [0, 1, 7, 8].forEach(function(len) {
             var list = [];
