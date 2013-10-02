@@ -77,7 +77,7 @@ var list = [1,2,3];
 
 // typed list
 var list = ['a', 'b', 'c'];
-list.__type__ = '[string]';
+list.__type__ = '[string';
 ```
 
 ### Long
