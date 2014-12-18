@@ -40,7 +40,7 @@ describe('hessian 2.0 test', function() {
 
 
     it('methodNull', function(done) {
-        proxy.invoke('methodNull', [], function(err, res) {
+        proxy.invoke('methodNull', "", [], function(err, res) {
             assert.isNull(res);
             done(err);
         });
@@ -48,7 +48,7 @@ describe('hessian 2.0 test', function() {
 
     function MAKE_ARGTEST(method, args, as) {
         it(method, function(done) {
-            proxy.invoke(method, args, function(err, res) {
+            proxy.invoke(method, "", args, function(err, res) {
                 if (as) as(res);
                 else assert.isTrue(res);
                 done(err);
@@ -58,7 +58,7 @@ describe('hessian 2.0 test', function() {
 
     function MAKE_REPLYTEST(method, reply, as) {
         it(method, function(done) {
-            proxy.invoke(method, [], function(err, res) {
+            proxy.invoke(method, "", [], function(err, res) {
                 if (as) as(res, reply);
                 else assert.strictEqual(res, reply);
                 done(err);
@@ -373,7 +373,7 @@ describe('hessian 2.0 test', function() {
             // MAKE_ARGTEST('argDouble_' + name, [arg]);
             var method = 'argDouble_' + name;
             it(method, function(done) {
-                proxy.invoke(method, [{
+                proxy.invoke(method, "", [{
                     val: arg,
                     type: 'double'
                 }], function(err, res) {
@@ -383,7 +383,7 @@ describe('hessian 2.0 test', function() {
             });
 
             it('replyDouble_' + name, function(done) {
-                proxy.invoke('replyDouble_' + name, [], function(err, res) {
+                proxy.invoke('replyDouble_' + name, "", [], function(err, res) {
                     assert(res == arg);
                     done(err);
                 });

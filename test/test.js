@@ -11,9 +11,9 @@ describe('hessian 1.0 test', function() {
         proxy.version = 1;
     });
 
-    function MAKE_ARGTEST(method, args) {
+    function MAKE_ARGTEST(method, apiClassHeader, args) {
         it(method, function(done) {
-            proxy.invoke(method, args, function(err, res) {
+            proxy.invoke(method, apiClassHeader, args, function(err, res) {
                 assert.isTrue(res);
                 done(err);
             });
@@ -21,14 +21,14 @@ describe('hessian 1.0 test', function() {
     }
 
     it('methodNull', function(done) {
-        proxy.invoke('methodNull', [], function(err, res) {
+        proxy.invoke('methodNull', "", [], function(err, res) {
             assert.isNull(res);
             done(err);
         });
     });
 
     it('replyNull', function(done) {
-        proxy.invoke('replyNull', null, function(err, res) {
+        proxy.invoke('replyNull', "", null, function(err, res) {
             assert.isNull(res);
             done(err);
         });
@@ -44,9 +44,10 @@ describe('hessian 1.0 test', function() {
         var dates = [new Date(0), new Date(1998, 4, 8, 7, 51), new Date(1998, 4, 8, 7, 51)];
         var method = 'argDate_1',
             arg = dates[1];
+       var apiClassHeader = "";
 
         it(method, function(done) {
-            proxy.invoke(method, [arg], function(err, res) {
+            proxy.invoke(method, apiClassHeader, [arg], function(err, res) {
                 console.log(res);
                 done(err);
             });
@@ -139,8 +140,9 @@ describe('hessian 1.0 test', function() {
             assert.isNumber(arg);
             // MAKE_ARGTEST('argDouble_' + name, [arg]);
             var method = 'argDouble_' + name;
+            var apiClassHeader = "";
             it(method, function(done) {
-                proxy.invoke(method, [arg], function(err, res) {
+                proxy.invoke(method, apiClassHeader, [arg], function(err, res) {
                     // assert.isTrue(res);
                     if (res !== true)
                         console.log(res.toString());
