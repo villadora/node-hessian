@@ -89,9 +89,11 @@ describe('hessian 2.0 test', function() {
 
             MAKE_REPLYTEST('replyUntypedMap_' + i, null, function(res) {
                 if (i < 3) {
-                    assert.lengthOf(res.keys(), i);
+                    if (res.keys().length) assert.lengthOf(res.keys(), i);
+                    else assert.equal(res.size, i);
                 } else {
-                    assert.lengthOf(res.keys(), 1);
+                    if (res.keys().length) assert.lengthOf(res.keys(), 1);                    
+                    else assert.equal(res.size, 1);
                 }
             });
         });
